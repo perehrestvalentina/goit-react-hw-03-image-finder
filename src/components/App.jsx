@@ -1,16 +1,23 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
-  );
-};
+import React, { Component } from 'react';
+import Searchbar from './Searchbar';
+import ImageGallery from './ImageGallery';
+
+export class App extends Component {
+  state = {
+    imageName: '',
+  };
+
+  handleFormSubmit = imageName => {
+    this.setState({ imageName });
+  };
+
+  render() {
+    return (
+      <>
+        <Searchbar onSubmit={this.handleFormSubmit} />
+        <ImageGallery imageName={this.state.imageName} />
+        {/* <ToastContainer autoClose={3000} /> */}
+      </>
+    );
+  }
+}
