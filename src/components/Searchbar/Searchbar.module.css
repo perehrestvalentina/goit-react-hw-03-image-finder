@@ -1,20 +1,20 @@
 .SearchForm {
   display: flex;
   align-items: center;
-  width: 100%;
+  width: 80%;
   max-width: 600px;
-  background-color: #fff;
-  border-radius: 3px;
+  background-color: white;
+  border-radius: 5px;
   overflow: hidden;
 }
 
-.SearchForm-button {
+.SearchForm_button {
   display: inline-block;
-  width: 48px;
-  height: 48px;
-  border: 0;
+  width: 65px;
+  height: 65px;
+  border: inherit;
   background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
-  background-size: 40%;
+  background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
   opacity: 0.6;
@@ -23,23 +23,23 @@
   outline: none;
 }
 
-.SearchForm-button:hover {
+.SearchForm_button:hover {
   opacity: 1;
 }
 
-.SearchForm-button-label {
+.SearchForm_button_label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  width: 1px;
+  width: 40px;
   height: 1px;
   padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  clip-path: inset(50%);
   border: 0;
 }
 
-.SearchForm-input {
+.SearchForm_input {
   display: inline-block;
   width: 100%;
   font: inherit;
@@ -50,11 +50,10 @@
   padding-right: 4px;
 }
 
-.SearchForm-input::placeholder {
+.SearchForm_input::placeholder {
   font: inherit;
   font-size: 18px;
 }
-
 .Searchbar {
   top: 0;
   left: 0;
@@ -63,13 +62,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 64px;
-  padding-right: 24px;
-  padding-left: 24px;
+  min-height: 100px;
+  padding-right: 1px;
+  padding-left: 1px;
   padding-top: 12px;
   padding-bottom: 12px;
   color: #fff;
-  background-color: #3f51b5;
-  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
-    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  background-color: #354061;
+  box-shadow: 0px 2px 4px -1px rgba(224, 117, 189, 0.2),
+    0px 4px 5px 0px rgba(231, 30, 30, 0.14),
+    0px 1px 10px 0px rgba(80, 164, 241, 0.12);
 }
