@@ -5,6 +5,7 @@ import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import Modal from './Modal';
 import Loader from './Loader';
+import Button from './Button';
 import fetchImages from 'apiHelpers';
 
 import css from './App.module.css';
@@ -22,29 +23,29 @@ export class App extends Component {
 
   async componentDidUpdate(_, prevState) {
     const { imageName, page } = this.state;
+
     if (prevState.imageName !== imageName || prevState.page !== page) {
+      this.setState({ status: 'pending' });
+
       try {
-        this.setState({ loading: true, status: 'pending' });
+        const images = await fetchImages(imageName, page);
 
-        await fetchImages(imageName, page).then(images => {
-          if (images.length === 0) {
-            this.setState(prevState => (prevState.images = []));
+        if (images.length === 0) {
+          this.setState(prevState => (prevState.images = []));
 
-            toast.error(
-              `no picture with name ${imageName}, check what you enter`
-            );
-            return;
-          }
-          this.setState({
-            images: [...this.state.images, ...images],
-            status: 'resolved',
-          });
-        });
+          toast.error(
+            `no picture with name ${imageName}, check what you enter`
+          );
+          return;
+        }
+
+        this.setState(prevState => ({
+          images: [...prevState.images, ...images],
+          status: 'resolved',
+        }));
       } catch (error) {
-        this.setState({ status: 'rejected' });
         toast.error('sorry image not found');
       } finally {
-        this.setState({ loading: false });
       }
     }
     if (prevState.page !== page) {
@@ -66,23 +67,15 @@ export class App extends Component {
   };
 
   render() {
-    const { imageName, loading, images, error, largeImageURL, imgTags } =
+    const { imageName, status, images, error, largeImageURL, imgTags } =
       this.state;
     return (
       <div className={css.App}>
         <Searchbar onSubmit={this.formSubmit} />
         {error && toast.error('sorry, try again')}
-        {loading && (
+        {status === 'pending' && (
           <div className={css.loading}>
-            <Loader
-              height="80"
-              width="80"
-              radius="9"
-              color="green"
-              ariaLabel="loading"
-              wrapperStyle
-              wrapperClass
-            />
+            <Loader />
           </div>
         )}
 
@@ -91,17 +84,8 @@ export class App extends Component {
         )}
         {images.length > 0 && (
           <>
-            <ImageGallery
-              images={images}
-              handleSelectedImage={this.selectedImage}
-            />
-            <button
-              className={css.buttonMain}
-              type="button"
-              onClick={this.loadMore}
-            >
-              Learn more
-            </button>
+            <ImageGallery images={images} selectedImage={this.selectedImage} />
+            {status === 'resolved' && <Button loadMore={this.loadMore} />}
           </>
         )}
         {largeImageURL && (
