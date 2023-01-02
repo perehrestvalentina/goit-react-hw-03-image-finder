@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import css from './Modal.module.css';
-import { createPortal } from 'react-dom';
 
 export class Modal extends Component {
   componentDidMount() {

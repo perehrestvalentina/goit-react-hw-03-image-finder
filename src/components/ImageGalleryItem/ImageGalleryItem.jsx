@@ -2,18 +2,18 @@ import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
 const ImageGalleryItem = ({
+  tags,
   webformatURL,
   largeImageURL,
-  tags,
-  handleSelectedImage,
+  selectedImage,
 }) => {
   return (
     <li className={css.ImageGalleryItem}>
       <img
+        className={css.ImageGalleryItem_image}
         src={webformatURL}
         alt={tags}
-        className={css.ImageGalleryItem_image}
-        onClick={() => handleSelectedImage(largeImageURL, tags)}
+        onClick={() => selectedImage(largeImageURL, tags)}
       />
     </li>
   );
@@ -21,10 +21,10 @@ const ImageGalleryItem = ({
 
 ImageGalleryItem.propTypes = {
   image: PropTypes.shape({
+    tags: PropTypes.string,
     webformatURL: PropTypes.string.isRequired,
     largeImageURL: PropTypes.string.isRequired,
-    tags: PropTypes.string,
-    handleSelectedImage: PropTypes.func,
+    selectedImage: PropTypes.func,
   }),
 };
 export default ImageGalleryItem;

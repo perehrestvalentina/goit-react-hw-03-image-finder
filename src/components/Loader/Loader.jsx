@@ -3,12 +3,13 @@ import { Audio } from 'react-loader-spinner';
 export const Loader = () => {
   return (
     <Audio
-      className=""
-      height="60"
-      width="60"
-      radius="10"
-      color="blue"
+      height="80"
+      width="80"
+      radius="9"
+      color="grey"
       ariaLabel="loading"
+      wrapperStyle
+      wrapperClass
     />
   );
 };

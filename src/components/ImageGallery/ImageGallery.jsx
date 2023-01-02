@@ -2,16 +2,16 @@ import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem';
 import css from './ImageGallery.module.css';
 
-const ImageGallery = ({ images, handleSelectedImage }) => {
+const ImageGallery = ({ images, selectedImage }) => {
   return (
     <ul className={css.ImageGallery}>
       {images.map(({ id, webformatURL, largeImageURL, tags }) => (
         <ImageGalleryItem
           key={id}
+          tags={tags}
           webformatURL={webformatURL}
           largeImageURL={largeImageURL}
-          tags={tags}
-          handleSelectedImage={handleSelectedImage}
+          selectedImage={selectedImage}
         />
       ))}
     </ul>
@@ -22,10 +22,10 @@ ImageGallery.propTypes = {
   images: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
+      tags: PropTypes.string.isRequired,
       webformatURL: PropTypes.string.isRequired,
       largeImageURL: PropTypes.string.isRequired,
-      tags: PropTypes.string.isRequired,
-      handleSelectedImage: PropTypes.func,
+      selectedImage: PropTypes.func,
     })
   ),
 };

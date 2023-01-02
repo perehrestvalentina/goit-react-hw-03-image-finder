@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-
 import toast, { Toaster } from 'react-hot-toast';
+
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
 import Modal from './Modal';
-import css from './App.module.css';
 import Loader from './Loader';
 import fetchImages from 'apiHelpers';
+
+import css from './App.module.css';
 
 export class App extends Component {
   state = {
@@ -29,9 +30,9 @@ export class App extends Component {
           if (images.length === 0) {
             this.setState(prevState => (prevState.images = []));
 
-            toast.error(`no picture with name ${imageName}`, {
-              icon: '🥺',
-            });
+            toast.error(
+              `no picture with name ${imageName}, check what you enter`
+            );
             return;
           }
           this.setState({
@@ -41,7 +42,7 @@ export class App extends Component {
         });
       } catch (error) {
         this.setState({ status: 'rejected' });
-        toast.error('we can not find');
+        toast.error('sorry image not found');
       } finally {
         this.setState({ loading: false });
       }
@@ -50,18 +51,18 @@ export class App extends Component {
     }
   }
 
-  handleLoadMore = () => {
+  loadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-  handleFormSubmit = imageName => {
-    this.setState({ imageName, page: 1, images: [] });
-  };
-
-  handleSelectedImage = (largeImageURL, imgTags) => {
-    this.setState({ largeImageURL, imgTags });
   };
   closeModal = () => {
     this.setState({ largeImageURL: '' });
+  };
+  formSubmit = imageName => {
+    this.setState({ imageName, page: 1, images: [] });
+  };
+
+  selectedImage = (largeImageURL, imgTags) => {
+    this.setState({ largeImageURL, imgTags });
   };
 
   render() {
@@ -69,34 +70,35 @@ export class App extends Component {
       this.state;
     return (
       <div className={css.App}>
-        <Searchbar onSubmit={this.handleFormSubmit} />
+        <Searchbar onSubmit={this.formSubmit} />
         {error && toast.error('sorry, try again')}
         {loading && (
           <div className={css.loading}>
             <Loader
-              height="70"
-              width="50"
-              radius="20"
-              color="blue"
+              height="80"
+              width="80"
+              radius="9"
+              color="green"
               ariaLabel="loading"
               wrapperStyle
+              wrapperClass
             />
           </div>
         )}
 
         {!imageName && (
-          <p className={css.looking}>What are you looking for? </p>
+          <p className={css.looking}>What do you want to find? </p>
         )}
         {images.length > 0 && (
           <>
             <ImageGallery
               images={images}
-              handleSelectedImage={this.handleSelectedImage}
+              handleSelectedImage={this.selectedImage}
             />
             <button
               className={css.buttonMain}
               type="button"
-              onClick={this.handleLoadMore}
+              onClick={this.loadMore}
             >
               Learn more
             </button>

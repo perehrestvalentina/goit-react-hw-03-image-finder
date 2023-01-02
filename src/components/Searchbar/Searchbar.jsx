@@ -7,13 +7,13 @@ class Searchbar extends Component {
   state = {
     imageName: '',
   };
-  handleNameChange = event => {
+  nameChange = event => {
     this.setState({ imageName: event.currentTarget.value.toLowerCase() });
   };
-  handleOnSubmit = event => {
+  onSubmit = event => {
     event.preventDefault();
     if (this.state.imageName.trim() === '') {
-      toast('enter photo title', {
+      toast('Please, enter the name of the image or photo', {
         style: {
           background: 'grey',
           color: '#fff',
@@ -30,7 +30,7 @@ class Searchbar extends Component {
   render() {
     return (
       <header className={css.Searchbar}>
-        <form className={css.SearchForm} onSubmit={this.handleOnSubmit}>
+        <form className={css.SearchForm} onSubmit={this.onSubmit}>
           <button type="submit" className={css.SearchForm_button}>
             <span className={css.SearchForm_button_label}>
               <BsSearch />
@@ -41,7 +41,7 @@ class Searchbar extends Component {
             className={css.SearchForm_input}
             type="text"
             value={this.state.imageName}
-            onChange={this.handleNameChange}
+            onChange={this.nameChange}
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
