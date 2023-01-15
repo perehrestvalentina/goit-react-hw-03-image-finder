@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
 import Searchbar from './Searchbar';
@@ -6,50 +6,59 @@ import ImageGallery from './ImageGallery';
 import Modal from './Modal';
 import Loader from './Loader';
 import Button from './Button';
-import fetchImages from 'apiHelpers';
+import imagesAPI from 'apiHelpers';
 
 import css from './App.module.css';
+import ImageGalleryItem from './ImageGalleryItem';
 
-export class App extends Component {
-  state = {
-    imageName: '',
-    images: [],
-    status: 'idle',
-    error: null,
-    largeImageURL: '',
-    imgTags: '',
-    page: 1,
-  };
+const Status = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  REJECTED: 'rejected',
+};
 
-  async componentDidUpdate(_, prevState) {
-    const { imageName, page } = this.state;
+export default function App({ imageName }) {
+  const [imageName, setImageName] = useState('');
+  const [images, setImages] = useState([]);
+  const [status, setStatus] = useState(Status.IDLE);
+  const [error, setError] = useState(null);
+  const [largeImageURL, setLargeImageURL] = useState('');
+  const [imgTags, setImgTags] = useState('');
+  const [page, setPage] = useState(1);
 
-    if (prevState.imageName !== imageName || prevState.page !== page) {
-      this.setState({ status: 'pending' });
-
-      try {
-        const images = await fetchImages(imageName, page);
-
-        if (images.length === 0) {
-          this.setState(prevState => (prevState.images = []));
-
-          toast.error(
-            `no picture with name ${imageName}, check what you enter`
-          );
-          return;
-        }
-
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images],
-          status: 'resolved',
-        }));
-      } catch (error) {
-        toast.error('sorry image not found');
-      } finally {
-      }
+  useEffect(() => {
+    if (!imageName) {
+      return;
     }
-    if (prevState.page !== page) {
-    }
+
+    setStatus(Status.PENDING);
+
+    imagesAPI
+      .fetchImages(imageName)
+      .then(images => {
+        setImages(images);
+        setStatus(Status.RESOLVED);
+      })
+
+      .catch(error => {
+        setError(error);
+        setStatus(Status.REJECTED);
+      });
+  }, [imageName]);
+
+  if (status === Status.IDLE) {
+    return <div>Enter the name of the picture you are looking for</div>;
+  }
+
+  if (status === Status.PENDING) {
+    return <ImageGalleryItem imageName={imageName} />;
+  }
+  if (status === Status.REJECTED) {
+    return <ImageError message={'sorry image not found'} />;
+  }
+  if (status === Status.RESOLVED) {
+    return <ImageGallery images={images} />;
   }
 
   loadMore = () => {
@@ -62,43 +71,37 @@ export class App extends Component {
     this.setState({ imageName, page: 1, images: [] });
   };
 
-  selectedImage = (largeImageURL, imgTags) => {
-    this.setState({ largeImageURL, imgTags });
+  const selectedImage = (largeImageURL, imgTags) => {
+    setLargeImageURL({ largeImageURL, imgTags });
   };
 
-  render() {
-    const { imageName, status, images, error, largeImageURL, imgTags } =
-      this.state;
-    return (
-      <div className={css.App}>
-        <Searchbar onSubmit={this.formSubmit} />
-        {error && toast.error('sorry, try again')}
-        {status === 'pending' && (
-          <div className={css.loading}>
-            <Loader />
-          </div>
-        )}
+  return (
+    <div className={css.App}>
+      <Searchbar onSubmit={this.formSubmit} />
+      {error && toast.error('sorry, try again')}
+      {status === 'pending' && (
+        <div className={css.loading}>
+          <Loader />
+        </div>
+      )}
 
-        {!imageName && (
-          <p className={css.looking}>What do you want to find? </p>
-        )}
-        {images.length > 0 && (
-          <>
-            <ImageGallery images={images} selectedImage={this.selectedImage} />
-            {status === 'resolved' && <Button loadMore={this.loadMore} />}
-          </>
-        )}
-        {largeImageURL && (
-          <Modal
-            largeImageURL={largeImageURL}
-            imgTags={imgTags}
-            onClose={this.closeModal}
-          >
-            <img src={largeImageURL} alt={imgTags} />
-          </Modal>
-        )}
-        <Toaster />
-      </div>
-    );
-  }
+      {!imageName && <p className={css.looking}>What do you want to find? </p>}
+      {images.length > 0 && (
+        <>
+          <ImageGallery images={images} selectedImage={this.selectedImage} />
+          {status === 'resolved' && <Button loadMore={this.loadMore} />}
+        </>
+      )}
+      {largeImageURL && (
+        <Modal
+          largeImageURL={largeImageURL}
+          imgTags={imgTags}
+          onClose={this.closeModal}
+        >
+          <img src={largeImageURL} alt={imgTags} />
+        </Modal>
+      )}
+      <Toaster />
+    </div>
+  );
 }

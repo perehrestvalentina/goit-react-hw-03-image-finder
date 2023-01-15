@@ -1,6 +1,6 @@
 import { Audio } from 'react-loader-spinner';
 
-export const Loader = () => {
+export default function Loader() {
   return (
     <Audio
       height="80"
@@ -12,5 +12,4 @@ export const Loader = () => {
       wrapperClass
     />
   );
-};
-export default Loader;
+}
